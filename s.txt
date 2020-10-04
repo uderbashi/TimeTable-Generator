@@ -1,0 +1,42 @@
+# This is a demonstration input file for schedule generator
+# In this file the input format will be explined with
+# There are four types of lines in this format, comment, label, course, and meeting
+
+# Comment is what you have been seeing until now, they are the lines starting with # and they are to be ignored by the program, used for documentation purposes
+
+# Label is a line starting with * and it will be the label on top of the timetable and the table ex.
+* Test File
+
+# Course is the definition of a course, thus its entry in the database will be opened and it will be able to recive meetings
+# Its format is CODE, NAME, INSTRUCTOR where 
+#### CODE is the code of the course that will be used to identify it, 
+#### NAME is the full name of the course used only in the table, 
+#### and INSTRUCTOR is the name of the instructor who is going to be teaching that course, also only appearng in the table, 
+# the feilds must be comma separated ex.
+CSE101, Intoduction to Computer Science and Engineering, Alan Turing
+
+# Meeting is the definition of a meeting of a PREVIOUSLY DEFINED course
+# Its format is CODE, DAY, START, END, LOC where 
+#### CODE is the previously defined code,
+#### DAY is a three letter abbreiation of a day with only the first letter being capital ex. Mon , 
+#### START and END are the stating and the ending times of the course respectively in the format of HHMM in 24-h system ex. 1330 (which is 1:30 PM), 
+#### and LOC is an optional feild setting the location of the meeting
+# the feilds must be comma separated ex.
+CSE101, Tue, 1330, 1530, Hall 1
+CSE101, Thu, 1230, 1430
+
+# Here is an example of some schedule
+MATH101, Calculus I, Issac Newton
+PHYS211, Modern Physics, Albert Einstein
+PAS155, Associate Football, Zinedine Zidane
+FLC101, Russian Literature I, Lev Tolstoy
+CSE111, C Programming Language, Dennis Ritchie
+
+MATH101, Mon, 930, 1230, Hall 2
+MATH101, Wed, 930, 1230, Hall 3
+PHYS211, Tue, 830, 1030, Hall 1
+PHYS211, Thu, 830, 1030, Hall 1
+FLC101, Tue, 1430, 1630, Hall 2
+PAS155, Fri, 1430, 1730, Pitch 1
+CSE111, Tue, 1530, 1730, Hall 1
+CSE111, Thu, 1530, 1730, Hall 1
