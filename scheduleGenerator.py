@@ -114,7 +114,7 @@ def detectOverlap(days):
 		overlapping.clear()
 		overlapLast = 0
 		for current in day:
-			if current.start > overlapLast:
+			if current.start >= overlapLast:
 				if len(overlapping) > 1:
 					resolveOverlap(overlapping)
 				overlapping.clear()
