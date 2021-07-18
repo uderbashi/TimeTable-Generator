@@ -283,6 +283,7 @@ def main():
 	parser.add_argument('-d', '--days', metavar='', type=int, default=5, help="How many days are desired in the schedule of the week")
 	parser.add_argument('-s', '--startTime', metavar='', type=int, default=830, help="The stariting time of the schedule in the format HHMM")
 	parser.add_argument('-e', '--endTime', metavar='', type=int, default=1730, help="The ending time of the schedule in the format HHMM")
+	parser.add_argument('-o', '--output', metavar='', type=str, default='Schedule', help="The name of the output pdf file")
 	parser.add_argument('files', nargs='*', type=str, default=['s.txt'], help="The input text files")
 	args = parser.parse_args()
 
@@ -319,7 +320,7 @@ def main():
 		DAYS_LIST.append(_DAYS_LIST[i])
 		i = (i+1)%7
 
-	pp = PdfPages("Schedule.pdf")
+	pp = PdfPages(args.output+".pdf")
 	for file in args.files:
 		courses, title = parse(file)
 		days = fillDays(courses)
