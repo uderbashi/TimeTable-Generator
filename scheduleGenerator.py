@@ -279,12 +279,12 @@ def drawTable(courses, title):
 def main():
 	## Parse Arguments
 	parser = argparse.ArgumentParser(description="Schedule Generator generates a beautiful PDF schedule for schools taking a text file as an input.\nThe input file should follow the format shopwn in s.txt file.")
-	parser.add_argument('-f', '--firstDay', metavar='', type=str, default='Mon', choices=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], help="The first day in the week")
+	parser.add_argument('-f', '--firstDay', metavar='', type=str, default='Mon', choices=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], help="The first day in the week, has to be one of {'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'}")
 	parser.add_argument('-d', '--days', metavar='', type=int, default=5, help="How many days are desired in the schedule of the week")
 	parser.add_argument('-s', '--startTime', metavar='', type=int, default=830, help="The stariting time of the schedule in the format HHMM")
 	parser.add_argument('-e', '--endTime', metavar='', type=int, default=1730, help="The ending time of the schedule in the format HHMM")
-	parser.add_argument('-o', '--output', metavar='', type=str, default='Schedule', help="The name of the output pdf file")
-	parser.add_argument('files', nargs='*', type=str, default=['s.txt'], help="The input text files")
+	parser.add_argument('-o', '--output', metavar='', type=str, default='Schedule', help="The name of the output pdf file (.pdf will be added automatically)")
+	parser.add_argument('files', nargs='*', type=str, default=['s.txt'], help="The input text files containing the details of the schedule")
 	args = parser.parse_args()
 
 	## Check arguments
