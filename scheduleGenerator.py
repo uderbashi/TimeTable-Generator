@@ -1,10 +1,13 @@
-import sys
+import argparse
 import matplotlib.pyplot as plt
 import matplotlib.transforms as trns
 from matplotlib.backends.backend_pdf import PdfPages
+from os.path import isfile
+import sys
 
 # constants that will be used to create the schedule.
-DAYS_LIST = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+_DAYS_LIST = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+DAYS_LIST = []
 COLOURS = ["limegreen", "royalblue", "mediumorchid", "gold", "pink", "chocolate", "aqua", "lightcoral", "slateblue", "springgreen", "deepskyblue", "plum", "orange", "firebrick", "olive",  "darkcyan"]
 START_TIME = 830
 END_TIME = 1730
@@ -62,27 +65,27 @@ def parse(filename):
 
 				if data[1] not in DAYS_LIST:
 					msg = "Error on line {lc}: \"{d}\" is not a valid day. Make sure you use a correct 3 letter day format ex \"Mon\" with only the first letter capitalised.".format(lc= lineCount, d = data[1])
-					exit(msg)
+					sys.exit(msg)
 
 				if int(data[2]) > END_TIME or int(data[2]) < START_TIME:
 					msg = "Error on line {lc}: \"{d}\" is not a valid statring time. Make sure the time is formated with 24hour style HHMM ex \"0930\" and is within the courses time.".format(lc= lineCount, d = data[2])
-					exit(msg)
+					sys.exit(msg)
 
 				if int(data[3]) > END_TIME or int(data[3]) < START_TIME:
 					msg = "Error on line {lc}: \"{d}\" is not a valid ending time. Make sure the time is formated with 24hour style HHMM ex \"0930\" and is within the courses time.".format(lc= lineCount, d = data[3])
-					exit(msg)
+					sys.exit(msg)
 
 				if int(data[3]) <= int(data[2]):
 					msg = "Error on line {lc}: \"{d},{dd}\" the ending time should be later than the starting time.".format(lc= lineCount, d = data[2], dd = data[3])
-					exit(msg)
+					sys.exit(msg)
 
 				if int(data[2]) % 100 >= 60:
 					msg = "Error on line {lc}: \"{d}\" is not a valid time due to the minutes being larger than 59.".format(lc= lineCount, d = data[2])
-					exit(msg)
+					sys.exit(msg)
 
 				if int(data[3]) % 100 >= 60:
 					msg = "Error on line {lc}: \"{d}\" is not a valid time due to the minutes being larger than 59.".format(lc= lineCount, d = data[3])
-					exit(msg)
+					sys.exit(msg)
 
 				current.times.append(Scheduled(current, DAYS_LIST.index(data[1]),int(data[2]),int(data[3]), None if len(data) == 4 else data[4]))
 				break
@@ -274,15 +277,50 @@ def drawTable(courses, title):
 	return fig
 
 def main():
-	if len(sys.argv) == 1 :
-		args = ["s.txt"]
-		print("Since no input file names were given as arguments, the program is defaulting to open \"s.txt\"")
-		print("If you have other file names please provide them as arguments to the program")
-		print()
-	else:
-		args = sys.argv[1:]
+	## Parse Arguments
+	parser = argparse.ArgumentParser(description="Schedule Generator generates a beautiful PDF schedule for schools taking a text file as an input.\nThe input file should follow the format shopwn in s.txt file.")
+	parser.add_argument('-f', '--firstDay', metavar='', type=str, default='Mon', choices=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], help="The first day in the week")
+	parser.add_argument('-d', '--days', metavar='', type=int, default=5, help="How many days are desired in the schedule of the week")
+	parser.add_argument('-s', '--startTime', metavar='', type=int, default=830, help="The stariting time of the schedule in the format HHMM")
+	parser.add_argument('-e', '--endTime', metavar='', type=int, default=1730, help="The ending time of the schedule in the format HHMM")
+	parser.add_argument('files', nargs='*', type=str, default=['s.txt'], help="The input text files")
+	args = parser.parse_args()
+
+	## Check arguments
+	if args.startTime >= args.endTime:
+		print("Error: Start time cannot be greater than ending time!")
+		sys.exit()
+	if args.startTime < 0:
+		print("Error: Start time cannot be less than 0!")
+		sys.exit()
+	if args.endTime > 2400:
+		print("Error: Ending time cannot be greater than than 24:00!")
+		sys.exit()
+	if args.startTime % 100 > 59 or args.endTime % 100 > 59:
+		print("Error: Time cannot contain more than 59 minutes (XX59)!")
+		sys.exit()
+	if args.days < 1 or args.days > 7:
+		print("Error: Days should be between 1-7!")
+		sys.exit()
+	for file in args.files:
+		if not isfile(file):
+			print("Error: the file {} does not exist!".format(file))
+			sys.exit()
+
+	#Use arguments
+	global _DAYS_LIST
+	global DAYS_LIST
+	global START_TIME
+	global END_TIME
+	START_TIME = args.startTime
+	END_TIME = args.endTime
+	i = _DAYS_LIST.index(args.firstDay)
+	for x in range(args.days):
+		DAYS_LIST.append(_DAYS_LIST[i])
+		i = (i+1)%7
+
 	pp = PdfPages("Schedule.pdf")
-	for file in args:
+	for file in args.files:
 		courses, title = parse(file)
 		days = fillDays(courses)
 		detectOverlap(days)
