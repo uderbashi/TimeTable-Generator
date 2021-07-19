@@ -1,4 +1,5 @@
 import argparse
+from math import ceil
 import matplotlib.pyplot as plt
 import matplotlib.transforms as trns
 from matplotlib.backends.backend_pdf import PdfPages
@@ -167,8 +168,8 @@ def drawTimetable(days, title):
 			plt.text(x1+0.02, yend-5, "{0}:{1:02d}".format(current.end//100, current.end%100), va="bottom", fontsize=7)
 			plt.text(x1+(x2-x1)*0.5, (ystart+yend)*0.5, current.course.code, ha="center", va="center", fontsize=9)
 
-	plotystart = modTime(START_TIME, -30)
-	plotyend = modTime(END_TIME, 30)
+	plotystart = convertTime(modTime(START_TIME, -30))
+	plotyend = convertTime(modTime(END_TIME, 30))
 
 	ax = fig.gca()
 	ax.yaxis.grid()
@@ -199,7 +200,7 @@ def drawTimetable(days, title):
 def genYLabels():
 	labels = []
 
-	labelQty = (convertTime(END_TIME) - convertTime(START_TIME)) // 100 + 1
+	labelQty = ceil((convertTime(END_TIME) - convertTime(START_TIME)) / 100) + 1
 
 	start = modTime(START_TIME, -30)
 
@@ -228,7 +229,7 @@ def modTime(time, mod):
 		hours += 1
 		minutes = minutes % 60
 
-	return hours * 100 + int((minutes / 60) * 100)
+	return hours * 100 + minutes
 
 def convertTime(time):
 	hours = time // 100
@@ -276,7 +277,7 @@ def drawTable(courses, title):
 	ax.set_title(title, fontweight ="bold")
 	return fig
 
-def main():
+def main(argv):
 	## Parse Arguments
 	parser = argparse.ArgumentParser(description="Schedule Generator generates a beautiful PDF schedule for schools taking a text file as an input.\nThe input file should follow the format shopwn in s.txt file.")
 	parser.add_argument('-f', '--firstDay', metavar='', type=str, default='Mon', choices=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], help="The first day in the week, has to be one of {'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'}")
@@ -285,7 +286,7 @@ def main():
 	parser.add_argument('-e', '--endTime', metavar='', type=int, default=1730, help="The ending time of the schedule in the format HHMM")
 	parser.add_argument('-o', '--output', metavar='', type=str, default='Schedule', help="The name of the output pdf file (.pdf will be added automatically)")
 	parser.add_argument('files', nargs='*', type=str, default=['s.txt'], help="The input text files containing the details of the schedule")
-	args = parser.parse_args()
+	args = parser.parse_args(args=argv)
 
 	## Check arguments
 	if args.startTime >= args.endTime:
@@ -332,4 +333,4 @@ def main():
 	pp.close()
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1:])
