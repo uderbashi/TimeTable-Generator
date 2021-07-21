@@ -44,7 +44,7 @@ def make_main():
 			]
 		], title='Input Files', relief=sg.RELIEF_SUNKEN)],
 		[sg.Frame(layout=[
-			[sg.Text('Path', size=(55, 1), key='pdfPath'), sg.FolderBrowse(size=(8,1))],
+			[sg.Text('Path', size=(55, 1), key='pdfPath'), sg.Input(key='pdfBrowse', visible=False, enable_events=True), sg.FolderBrowse(size=(8,1))],
 			[
 				sg.InputText('Schedule', key='pdfName'),
 				sg.Text('.pdf')
@@ -80,7 +80,7 @@ def make_schedule():
 			]
 		], title='Course Times', relief=sg.RELIEF_SUNKEN)],
 		[sg.Frame(layout=[
-			[sg.Text('Path', size=(55, 1), key='txtPath'), sg.FolderBrowse(size=(8,1))],
+			[sg.Text('Path', size=(55, 1), key='txtPath'), sg.Input(key='pdfBrowse', visible=False, enable_events=True), sg.FolderBrowse(size=(8,1))],
 			[
 				sg.InputText('Schedule', key='txtName'),
 				sg.Text('.txt')
@@ -183,6 +183,9 @@ def main():
 				tempList.remove(current)
 			window['fileList'].update(values=tempList)
 
+		if event == 'pdfBrowse':
+			window['pdfPath'].update(value=values['pdfBrowse'] + '/')
+
 		if event == 'gen':
 			# check empty feild 
 			if window['pdfName'].get() == '' or window['fileList'].get_list_values() == []:
@@ -202,7 +205,8 @@ def main():
 			outArg = values['pdfName']
 			if window['pdfPath'].get() != 'Path':
 				outArg = window['pdfPath'].get() + outArg
-
+			print(outArg)
+			print(window['pdfPath'].get())
 			#check bad input
 			if not match("^[A-Za-z0-9_-]*$", values['pdfName']):
 				sg.popup_error("Filename can only contain letters, numbers, _, and -")
@@ -262,6 +266,9 @@ def main():
 			for current in tempTime:
 				tempList.remove(current)
 			window['timeList'].update(values=tempList)
+
+		if event == 'txtBrowse':
+			window['txtPath'].update(value=values['txtBrowse'] + '/')
 
 		if event == 'txtGen':
 			#check empty inputs
