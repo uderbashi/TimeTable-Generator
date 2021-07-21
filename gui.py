@@ -205,8 +205,6 @@ def main():
 			outArg = values['pdfName']
 			if window['pdfPath'].get() != 'Path':
 				outArg = window['pdfPath'].get() + outArg
-			print(outArg)
-			print(window['pdfPath'].get())
 			#check bad input
 			if not match("^[A-Za-z0-9_-]*$", values['pdfName']):
 				sg.popup_error("Filename can only contain letters, numbers, _, and -")
