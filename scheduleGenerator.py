@@ -290,24 +290,24 @@ def main(argv):
 
 	## Check arguments
 	if args.startTime >= args.endTime:
-		print("Error: Start time cannot be greater than ending time!")
-		sys.exit()
+		msg = "Error: Start time cannot be greater than ending time!"
+		sys.exit(msg)
 	if args.startTime < 0:
-		print("Error: Start time cannot be less than 0!")
-		sys.exit()
+		msg = "Error: Start time cannot be less than 0!"
+		sys.exit(msg)
 	if args.endTime > 2400:
-		print("Error: Ending time cannot be greater than than 24:00!")
-		sys.exit()
+		msg = "Error: Ending time cannot be greater than than 24:00!"
+		sys.exit(msg)
 	if args.startTime % 100 > 59 or args.endTime % 100 > 59:
-		print("Error: Time cannot contain more than 59 minutes (XX59)!")
-		sys.exit()
+		msg = "Error: Time cannot contain more than 59 minutes (XX59)!"
+		sys.exit(msg)
 	if args.days < 1 or args.days > 7:
-		print("Error: Days should be between 1-7!")
-		sys.exit()
+		msg = "Error: Days should be between 1-7!"
+		sys.exit(msg)
 	for file in args.files:
 		if not isfile(file):
-			print("Error: the file {} does not exist!".format(file))
-			sys.exit()
+			msg = "Error: the file {} does not exist!".format(file)
+			sys.exit(msg)
 
 	#Use arguments
 	global _DAYS_LIST
@@ -316,6 +316,7 @@ def main(argv):
 	global END_TIME
 	START_TIME = args.startTime
 	END_TIME = args.endTime
+	DAYS_LIST = []
 	i = _DAYS_LIST.index(args.firstDay)
 	for x in range(args.days):
 		DAYS_LIST.append(_DAYS_LIST[i])
